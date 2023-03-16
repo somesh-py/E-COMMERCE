@@ -64,11 +64,11 @@ def show_cart_data(request):
         return render(request,'app/addtocart.html',{'cart':cart})
 
 def add_to_cart(request):
-  user=request.user
-  product_id=request.GET.get('prod_id')
-  product=Product.objects.get(id=product_id)
-  Cart(user=user,product=product).save()
-  return redirect('/cart')
+    user=request.user
+    product_id=request.GET.get('prod_id')
+    product=Product.objects.get(id=product_id)
+    Cart(user=user,product=product).save()
+    return redirect('/cart')
 
 
 
