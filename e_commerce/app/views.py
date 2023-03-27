@@ -186,9 +186,8 @@ class ProfileView(View):
 
 
 def address(request):
- add = Customer.objects.filter(user=request.user)
- return render(request, 'app/address.html', {'add':add, 'active':'btn-primary'})
-
+    add = Customer.objects.filter(user=request.user)
+    return render(request, 'app/address.html', {'add': add, 'active': 'btn-primary'})
 
 
 def orders(request):
@@ -199,16 +198,67 @@ def change_password(request):
     return render(request, 'app/changepassword.html')
 
 
-def mobile(request):
-    return render(request, 'app/mobile.html')
+def mobile(request, data=None):
+    if data == None:
+        mobile = Product.objects.filter(category='M')
+    elif data == 'Redmi' or data == 'Redmi' or data == 'Samsung' or data == 'Nokia' or data == 'Vivo' or data == 'Tecno' or data == 'Oppo' or data == 'iPhone' or data == 'realme' or data == 'iQOO' or data == 'OnePlus':
+        mobile = Product.objects.filter(category='M').filter(brand=data)
+
+    elif data == 'below':
+        mobile = Product.objects.filter(
+            category='M').filter(discounted_price__lt=10000)
+
+    elif data == 'above':
+        mobile = Product.objects.filter(
+            category='M').filter(discounted_price__gt=10000)
+
+    return render(request, 'app/mobile.html', {'mobiles': mobile})
 
 
-def login(request):
-    return render(request, 'app/login.html')
+# def laptop(request, data=None):
+#     if data == None:
+#         laptops = Product.objects.filter(category='L')
+#     elif data == 'Lenovo' or data == 'HP' or data == 'Dell' or data == 'Apple' or data == 'ASUS' or data == 'Xiaomi' or data == 'Honor' or data == 'Acer':
+#         laptops = Product.objects.filter(category='L').filter(brand=data)
+#     elif data == 'below':
+#         laptops = Product.objects.filter(
+#             category='L').filter(discounted_price__lt=25000)
+#     elif data == 'above':
+#         laptops = Product.objects.filter(
+#             category='L').filter(discounted_price__gt=25000)
+#     return render(request, 'app/laptop.html', {'laptops': laptops})
+
+def laptop(request, data=None):
+    if data == None:
+        laptops = Product.objects.filter(category='L')
+    elif data == 'Lenovo' or data == 'HP' or data == 'Dell' or data == 'Apple' or data == 'ASUS' or data == 'Xiaomi' or data == 'Honor' or data == 'Acer':
+        laptops = Product.objects.filter(category='L').filter(brand=data)
+    elif data == 'below':
+        laptops = Product.objects.filter(category='L').filter(discounted_price__lt=25000)
+    elif data == 'above':
+        laptops = Product.objects.filter(category='L').filter(discounted_price__gt=25000)
+    return render(request, 'app/laptop.html',{'laptops':laptops})
 
 
-def customerregistration(request):
-    return render(request, 'app/customerregistration.html')
+# def login(request):
+#     return render(request, 'app/login.html')
+
+
+# def customerregistration(request):
+#     return render(request, 'app/customerregistration.html')
+
+class CustomerRegistrationView(View):
+    def get(self, request):
+        form = CustomerRegistrationForm()
+        return render(request, 'app/customerregistration.html', {'form': form})
+
+    def post(self, request):
+        form = CustomerRegistrationForm(request.POST)
+        if form.is_valid():
+            messages.success(request, 'Congratulation!! Registered Successfully')
+            form.save()
+        return render(request, 'app/customerregistration.html', {'form': form})
+
 
 
 def checkout(request):
